@@ -4,7 +4,7 @@ from flask import Flask
 import discord
 from groq import Groq
 
-# Servidor Flask para mantener activo el Web Service en Render
+# Servidor Flask para Render
 app = Flask(__name__)
 
 @app.route('/')
@@ -20,9 +20,8 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 client = Groq(api_key=GROQ_API_KEY)
 
-# Habilitar intents para que pueda leer contenido de mensajes y DMs
-intents = discord.Intents.all()
-bot = discord.Client(intents=intents)
+# Instancia del cliente directa (discord.py-self no usa discord.Intents)
+bot = discord.Client()
 
 @bot.event
 async def on_ready():
@@ -30,13 +29,11 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    print(f"Mensaje recibido de {message.author}: {message.content}") # Imprime en consola para depurar
-
-    # Ignorar mensajes propios
+    # Ignorar mensajes enviados por tu propia cuenta
     if message.author == bot.user:
         return
 
-    # Comprobar si es DM o mención
+    # Comprobar si es un chat privado (DM) o si te mencionan en un servidor/grupo
     is_dm = isinstance(message.channel, discord.DMChannel)
     is_mentioned = bot.user.mentioned_in(message)
 
