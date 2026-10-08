@@ -60,7 +60,7 @@ async def on_message(message):
                         "content": user_prompt
                     }
                 ],
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
             )
             response_text = chat_completion.choices[0].message.content
             
