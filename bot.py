@@ -19,7 +19,10 @@ TOKEN = os.environ.get("DISCORD_TOKEN")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 client = Groq(api_key=GROQ_API_KEY)
-bot = discord.Client()
+
+# Habilitar intents para que pueda leer contenido de mensajes y DMs
+intents = discord.Intents.all()
+bot = discord.Client(intents=intents)
 
 @bot.event
 async def on_ready():
@@ -27,16 +30,17 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    # Ignorar mensajes propios para evitar bucles de respuestas
+    print(f"Mensaje recibido de {message.author}: {message.content}") # Imprime en consola para depurar
+
+    # Ignorar mensajes propios
     if message.author == bot.user:
         return
 
-    # Comprobar si es un mensaje privado (DM) o una mención en un servidor/grupo
+    # Comprobar si es DM o mención
     is_dm = isinstance(message.channel, discord.DMChannel)
     is_mentioned = bot.user.mentioned_in(message)
 
     if is_dm or is_mentioned:
-        # Si es mención en servidor limpiamos el tag, si es DM usamos el texto directo
         if is_mentioned:
             user_prompt = message.content.replace(f'<@!{bot.user.id}>', '').replace(f'<@{bot.user.id}>', '').strip()
         else:
@@ -65,10 +69,8 @@ async def on_message(message):
             print(f"Error al conectar con Groq: {e}")
 
 if __name__ == "__main__":
-    # Iniciar Flask en un hilo separado para cumplir con el Health Check de Render
     t = threading.Thread(target=run_flask)
     t.daemon = True
     t.start()
     
-    # Iniciar el bot de Discord
     bot.run(TOKEN)
