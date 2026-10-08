@@ -60,7 +60,7 @@ async def on_message(message):
                         "content": user_prompt
                     }
                 ],
-                model="gpt-oss-120b",
+                model="openai/gpt-oss-120b",
             )
             response_text = chat_completion.choices[0].message.content
             
