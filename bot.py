@@ -47,4 +47,4 @@ async def on_message(message):
 if __name__ == "__main__":
     t = threading.Thread(target=run_flask)
     t.start()
-    bot.run(TOKEN, bot=False)
+    bot.run(TOKEN)
